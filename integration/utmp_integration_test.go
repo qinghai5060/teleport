@@ -102,6 +102,7 @@ type upack struct {
 
 	// cert is a certificate signed by user CA
 	cert []byte
+
 	// pcert is a parsed SSH Certificae
 	pcert *ssh.Certificate
 
