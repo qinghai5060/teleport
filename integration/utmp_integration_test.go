@@ -192,8 +192,7 @@ func (s *SrvCtx) setUpContext(t *testing.T) string {
 		),
 		regular.SetBPF(&bpf.NOP{}),
 		regular.SetClock(s.clock),
-		regular.SetUtmpPath(utmpPath),
-		regular.SetWtmpPath(wtmpPath),
+		regular.SetUtmpPath(&utmpPath, &wtmpPath),
 	)
 	require.NoError(t, err)
 	s.srv = srv

@@ -101,10 +101,10 @@ type ExecCommand struct {
 	// The hostname of the node.
 	Hostname string `json:"hostname"`
 
-	// The path of the system utmp database.
+	// UtmpPath is the path of the system utmp database.
 	UtmpPath *string `json:"utmp_path"`
 
-	// The path of the system wtmp log.
+	// WtmpPath is the path of the system wtmp log.
 	WtmpPath *string `json:"wtmp_path"`
 }
 

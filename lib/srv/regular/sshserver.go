@@ -186,14 +186,9 @@ func (s *Server) GetSessionServer() rsession.Service {
 	return s.sessionServer
 }
 
-// GetUtmpPath returns the optional override of the utmp path.
-func (s *Server) GetUtmpPath() *string {
-	return s.utmpPath
-}
-
-// GetWtmpPath returns the optional override of the wtmp path.
-func (s *Server) GetWtmpPath() *string {
-	return s.wtmpPath
+// GetUtmpPath returns the optional override of the utmp and wtmp path.
+func (s *Server) GetUtmpPath() (*string, *string) {
+	return s.utmpPath, s.wtmpPath
 }
 
 // GetPAM returns the PAM configuration for this server.
@@ -313,18 +308,11 @@ func (s *Server) HandleConnection(conn net.Conn) {
 // RotationGetter returns rotation state
 type RotationGetter func(role teleport.Role) (*services.Rotation, error)
 
-// SetUtmpPath is a functional server option to override the user accounting database path.
-func SetUtmpPath(utmpPath string) ServerOption {
+// SetUtmpPath is a functional server option to override the user accounting database and log path.
+func SetUtmpPath(utmpPath, wtmpPath *string) ServerOption {
 	return func(s *Server) error {
-		s.utmpPath = &utmpPath
-		return nil
-	}
-}
-
-// SetWtmpPath is a functional server option to override the user accounting log path.
-func SetWtmpPath(wtmpPath string) ServerOption {
-	return func(s *Server) error {
-		s.wtmpPath = &wtmpPath
+		s.utmpPath = utmpPath
+		s.wtmpPath = wtmpPath
 		return nil
 	}
 }
