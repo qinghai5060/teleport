@@ -729,6 +729,7 @@ func (c *ServerContext) ExecCommand() (*ExecCommand, error) {
 		requestType = c.request.Type
 	}
 
+	// This block of code gathers and prepares metadata thats needed for user accounting.
 	hostname := c.srv.GetInfo().GetHostname()
 	remoteAddr := c.ConnectionContext.ServerConn.Conn.RemoteAddr()
 	preparedAddr, err := uacc.PrepareAddr(remoteAddr)
