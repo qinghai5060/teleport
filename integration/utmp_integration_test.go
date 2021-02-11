@@ -39,7 +39,6 @@ import (
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/ssh"
-	. "gopkg.in/check.v1"
 )
 
 // teleportTestUser is additional user used for tests
@@ -198,7 +197,7 @@ func (s *SrvCtx) setUpContext(t *testing.T) string {
 	)
 	require.NoError(t, err)
 	s.srv = srv
-	require.NoError(t, auth.CreateUploaderDir(nodeDir), IsNil)
+	require.NoError(t, auth.CreateUploaderDir(nodeDir))
 	require.NoError(t, s.srv.Start())
 	return utmpPath
 }
