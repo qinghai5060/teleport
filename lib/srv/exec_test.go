@@ -469,7 +469,7 @@ func (f *fakeServer) GetClock() clockwork.Clock {
 func (f *fakeServer) GetInfo() services.Server {
 	hostname, err := os.Hostname()
 	if err != nil {
-		panic(err)
+		hostname = "localhost"
 	}
 
 	return &services.ServerV2{
