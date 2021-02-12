@@ -83,7 +83,16 @@ func TestRootUTMPEntryExists(t *testing.T) {
 	require.NoError(t, err)
 	defer se.Close()
 
-	require.NoError(t, se.RequestPty("xterm", 30, 30, ssh.TerminalModes{}), nil)
+	modes := ssh.TerminalModes{
+		ssh.ECHO:          0,     // disable echoing
+		ssh.TTY_OP_ISPEED: 14400, // input speed = 14.4kbaud
+		ssh.TTY_OP_OSPEED: 14400, // output speed = 14.4kbaud
+	}
+
+	require.NoError(t, se.RequestPty("xterm", 80, 80, modes), nil)
+	err = se.Shell()
+	require.NoError(t, err)
+	time.Sleep(5 * time.Second)
 	entryExists := uacc.UserWithPtyInDatabase(&s.utmpPath, teleportTestUser)
 	require.NoError(t, entryExists)
 }
