@@ -726,14 +726,10 @@ func (c *ServerContext) ExecCommand() (*ExecCommand, error) {
 		requestType = c.request.Type
 	}
 
-	// This block of code gathers and prepares metadata thats needed for user accounting.
-	hostname := c.srv.GetInfo().GetHostname()
-	remoteAddr := c.ConnectionContext.ServerConn.Conn.RemoteAddr()
-	preparedAddr, err := uacc.PrepareAddr(remoteAddr)
+	uaccMetadata, err := newUaccMetadata(c)
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}
-	utmpPath, wtmpPath := c.srv.GetUtmpPath()
 
 	// Create the execCommand that will be sent to the child process.
 	return &ExecCommand{
@@ -750,10 +746,7 @@ func (c *ServerContext) ExecCommand() (*ExecCommand, error) {
 		ServiceName:           pamServiceName,
 		UsePAMAuth:            pamUseAuth,
 		IsTestStub:            c.IsTestStub,
-		RemoteAddr:            preparedAddr,
-		Hostname:              hostname,
-		UtmpPath:              utmpPath,
-		WtmpPath:              wtmpPath,
+		UaccMetadata:          *uaccMetadata,
 	}, nil
 }
 
@@ -823,4 +816,21 @@ func closeAll(closers ...io.Closer) error {
 	}
 
 	return trace.NewAggregate(errs...)
+}
+
+func newUaccMetadata(c *ServerContext) (*UaccMetadata, error) {
+	hostname := c.srv.GetInfo().GetHostname()
+	remoteAddr := c.ConnectionContext.ServerConn.Conn.RemoteAddr()
+	preparedAddr, err := uacc.PrepareAddr(remoteAddr)
+	if err != nil {
+		return nil, trace.Wrap(err)
+	}
+	utmpPath, wtmpPath := c.srv.GetUtmpPath()
+
+	return &UaccMetadata{
+		Hostname:   hostname,
+		RemoteAddr: preparedAddr,
+		UtmpPath:   utmpPath,
+		WtmpPath:   wtmpPath,
+	}, nil
 }

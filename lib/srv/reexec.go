@@ -95,11 +95,17 @@ type ExecCommand struct {
 	// IsTestStub is used by tests to mock the shell.
 	IsTestStub bool `json:"is_test_stub"`
 
-	// RemoteAddr is the address of the remote host.
-	RemoteAddr [4]int32 `json:"remote_addr"`
+	// UaccMetadata contains metadata needed for user accounting.
+	UaccMetadata
+}
 
+// UaccMetadata contains information the child needs from the parent for user accounting.
+type UaccMetadata struct {
 	// The hostname of the node.
 	Hostname string `json:"hostname"`
+
+	// RemoteAddr is the address of the remote host.
+	RemoteAddr [4]int32 `json:"remote_addr"`
 
 	// UtmpPath is the path of the system utmp database.
 	UtmpPath string `json:"utmp_path,omitempty"`
