@@ -92,9 +92,18 @@ func TestRootUTMPEntryExists(t *testing.T) {
 	require.NoError(t, se.RequestPty("xterm", 80, 80, modes), nil)
 	err = se.Shell()
 	require.NoError(t, err)
-	time.Sleep(5 * time.Second)
-	entryExists := uacc.UserWithPtyInDatabase(s.utmpPath, teleportTestUser)
-	require.NoError(t, entryExists)
+
+	start := time.Now()
+	for time.Now().Sub(start) < 5*time.Minute {
+		time.Sleep(time.Second)
+		entryExists := uacc.UserWithPtyInDatabase(s.utmpPath, teleportTestUser)
+		if entryExists == nil {
+			break
+		}
+		if !trace.IsNotFound(entryExists) {
+			require.NoError(t, err)
+		}
+	}
 }
 
 // upack holds all ssh signing artefacts needed for signing and checking user keys
