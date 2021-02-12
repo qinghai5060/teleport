@@ -57,23 +57,22 @@ type SrvCtx struct {
 	clock      clockwork.FakeClock
 	nodeClient *auth.Client
 	nodeID     string
+	utmpPath   string
 }
 
 // TestRootUTMPEntryExists verifies that user accounting is done on supported systems.
 func TestRootUTMPEntryExists(t *testing.T) {
-	s := &SrvCtx{}
-	utmpPath := s.setUpContext(t)
-	defer s.tearDownContext(t)
+	s := newSrvCtx(t)
 	up, err := newUpack(s, teleportTestUser, []string{teleportTestUser}, wildcardAllow)
 	require.NoError(t, err)
 
-	sshConfig2 := &ssh.ClientConfig{
+	sshConfig := &ssh.ClientConfig{
 		User:            teleportTestUser,
 		Auth:            []ssh.AuthMethod{ssh.PublicKeys(up.certSigner)},
 		HostKeyCallback: ssh.FixedHostKey(s.signer.PublicKey()),
 	}
 
-	client, err := ssh.Dial("tcp", s.srv.Addr(), sshConfig2)
+	client, err := ssh.Dial("tcp", s.srv.Addr(), sshConfig)
 	require.NoError(t, err)
 	defer func() {
 		err := client.Close()
@@ -85,7 +84,7 @@ func TestRootUTMPEntryExists(t *testing.T) {
 	defer se.Close()
 
 	require.NoError(t, se.RequestPty("xterm", 30, 30, ssh.TerminalModes{}), nil)
-	entryExists := uacc.UserWithPtyInDatabase(&utmpPath, teleportTestUser)
+	entryExists := uacc.UserWithPtyInDatabase(&s.utmpPath, teleportTestUser)
 	require.NoError(t, entryExists)
 }
 
@@ -125,7 +124,18 @@ func TouchFile(name string) error {
 }
 
 // This returns the utmp path.
-func (s *SrvCtx) setUpContext(t *testing.T) string {
+func newSrvCtx(t *testing.T) *SrvCtx {
+	s := &SrvCtx{}
+
+	t.Cleanup(func() {
+		if s.server != nil {
+			require.NoError(t, s.server.Close())
+		}
+		if s.srv != nil {
+			require.NoError(t, s.srv.Close())
+		}
+	})
+
 	s.clock = clockwork.NewFakeClock()
 	tempdir := t.TempDir()
 
@@ -167,6 +177,7 @@ func (s *SrvCtx) setUpContext(t *testing.T) string {
 	require.NoError(t, err)
 	err = TouchFile(wtmpPath)
 	require.NoError(t, err)
+	s.utmpPath = utmpPath
 
 	nodeDir := t.TempDir()
 	srv, err := regular.New(
@@ -199,16 +210,7 @@ func (s *SrvCtx) setUpContext(t *testing.T) string {
 	s.srv = srv
 	require.NoError(t, auth.CreateUploaderDir(nodeDir))
 	require.NoError(t, s.srv.Start())
-	return utmpPath
-}
-
-func (s *SrvCtx) tearDownContext(t *testing.T) {
-	if s.server != nil {
-		require.NoError(t, s.server.Close())
-	}
-	if s.srv != nil {
-		require.NoError(t, s.srv.Close())
-	}
+	return s
 }
 
 func newUpack(s *SrvCtx, username string, allowedLogins []string, allowedLabels services.Labels) (*upack, error) {

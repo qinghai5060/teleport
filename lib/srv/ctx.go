@@ -123,7 +123,7 @@ type Server interface {
 	Context() context.Context
 
 	// GetUtmpPath returns the path of the user accounting database and log. If nil is returned the path used is the system default.
-	GetUtmpPath() (*string, *string)
+	GetUtmpPath() (utmp, wtmp *string)
 }
 
 // IdentityContext holds all identity information associated with the user
