@@ -1,5 +1,3 @@
-//+build !test_as_root
-
 /*
 Copyright 2016-2019 Gravitational, Inc.
 
@@ -5120,21 +5118,4 @@ func canTestBPF() error {
 
 func dumpGoroutineProfile() {
 	pprof.Lookup("goroutine").WriteTo(os.Stderr, 2)
-}
-
-<<<<<<< HEAD
-func TestNonRootUser(t *testing.T) {
-	rootUID := 0
-	actualUID := os.Geteuid()
-	if actualUID == rootUID {
-		t.Errorf("This test should not be running as root, but it is (UID: %v)", actualUID)
-=======
-// TestRootUser is an example test which will only be run when running as root.
-// Used to validate Makefile/build logic.
-// All tests which must run as root need a name starting with "TestRoot".
-func TestRootUser(t *testing.T) {
-	if !isRoot() {
-		t.Skipf("skipping %v because tests are not running as root", t.Name())
->>>>>>> 5f6b13265... cherry pick 2500627e02d141cdeda681a55c48ab0621905929
-	}
 }

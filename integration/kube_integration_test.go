@@ -1,5 +1,3 @@
-//+build !test_as_root
-
 /*
 Copyright 2016-2020 Gravitational, Inc.
 
