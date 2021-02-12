@@ -102,10 +102,10 @@ type ExecCommand struct {
 	Hostname string `json:"hostname"`
 
 	// UtmpPath is the path of the system utmp database.
-	UtmpPath *string `json:"utmp_path"`
+	UtmpPath string `json:"utmp_path,omitempty"`
 
 	// WtmpPath is the path of the system wtmp log.
-	WtmpPath *string `json:"wtmp_path"`
+	WtmpPath string `json:"wtmp_path,omitempty"`
 }
 
 // RunCommand reads in the command to run from the parent process (over a

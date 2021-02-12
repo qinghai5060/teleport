@@ -490,8 +490,8 @@ func (f *fakeServer) GetInfo() services.Server {
 	}
 }
 
-func (f *fakeServer) GetUtmpPath() (*string, *string) {
-	return nil, nil
+func (f *fakeServer) GetUtmpPath() (string, string) {
+	return "", ""
 }
 
 func (f *fakeServer) UseTunnel() bool {

@@ -155,10 +155,10 @@ type Server struct {
 	onHeartbeat func(error)
 
 	// Path to the user accounting database.
-	utmpPath *string
+	utmpPath string
 
 	// Path to the user accounting log.
-	wtmpPath *string
+	wtmpPath string
 }
 
 // GetClock returns server clock implementation
@@ -187,7 +187,7 @@ func (s *Server) GetSessionServer() rsession.Service {
 }
 
 // GetUtmpPath returns the optional override of the utmp and wtmp path.
-func (s *Server) GetUtmpPath() (*string, *string) {
+func (s *Server) GetUtmpPath() (string, string) {
 	return s.utmpPath, s.wtmpPath
 }
 
@@ -309,7 +309,7 @@ func (s *Server) HandleConnection(conn net.Conn) {
 type RotationGetter func(role teleport.Role) (*services.Rotation, error)
 
 // SetUtmpPath is a functional server option to override the user accounting database and log path.
-func SetUtmpPath(utmpPath, wtmpPath *string) ServerOption {
+func SetUtmpPath(utmpPath, wtmpPath string) ServerOption {
 	return func(s *Server) error {
 		s.utmpPath = utmpPath
 		s.wtmpPath = wtmpPath

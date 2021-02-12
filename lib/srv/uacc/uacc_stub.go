@@ -27,19 +27,17 @@ and integrating with that takes additional effort.
 */
 package uacc
 
-import "net"
-
 // Open is a stub function.
-func Open(username, hostname string, remote net.IP, ttyName string) error {
+func Open(utmpPath, wtmpPath string, username, hostname string, remote [4]int32, ttyName string) error {
 	return nil
 }
 
 // Close is a stub function.
-func Close(ttyName string) error {
+func Close(utmpPath, wtmpPath string, ttyName string) error {
 	return nil
 }
 
 // UserWithPtyInDatabase is a stub function.
-func UserWithPtyInDatabase(user string) (bool, error) {
-	return true, nil
+func UserWithPtyInDatabase(utmpPath string, username string) error {
+	return nil
 }

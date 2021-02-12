@@ -48,7 +48,7 @@ const nameMaxLen = 255
 // `hostname`: Name of the system the user is logged into.
 // `remoteAddrV6`: IPv6 address of the remote host.
 // `ttyName`: Name of the TTY including the `/dev/` prefix.
-func Open(utmpPath, wtmpPath *string, username, hostname string, remote [4]int32, ttyName string) error {
+func Open(utmpPath, wtmpPath string, username, hostname string, remote [4]int32, ttyName string) error {
 	// String parameter validation.
 	if len(username) > nameMaxLen {
 		return trace.BadParameter("username length exceeds OS limits")
@@ -63,12 +63,12 @@ func Open(utmpPath, wtmpPath *string, username, hostname string, remote [4]int32
 	// Convert Go strings into C strings that we can pass over ffi.
 	var cUtmpPath *C.char = nil
 	var cWtmpPath *C.char = nil
-	if utmpPath != nil {
-		cUtmpPath = C.CString(*utmpPath)
+	if len(utmpPath) > 0 {
+		cUtmpPath = C.CString(utmpPath)
 		defer C.free(unsafe.Pointer(cUtmpPath))
 	}
-	if wtmpPath != nil {
-		cWtmpPath = C.CString(*wtmpPath)
+	if len(wtmpPath) > 0 {
+		cWtmpPath = C.CString(wtmpPath)
 		defer C.free(unsafe.Pointer(cWtmpPath))
 	}
 	cUsername := C.CString(username)
@@ -116,7 +116,7 @@ func Open(utmpPath, wtmpPath *string, username, hostname string, remote [4]int32
 // This should be called when an interactive session exits.
 //
 // The `ttyName` parameter must be the name of the TTY including the `/dev/` prefix.
-func Close(utmpPath, wtmpPath *string, ttyName string) error {
+func Close(utmpPath, wtmpPath string, ttyName string) error {
 	// String parameter validation.
 	if len(ttyName) > (int)(C.max_len_tty_name()-1) {
 		return trace.BadParameter("tty name length exceeds OS limits")
@@ -125,12 +125,12 @@ func Close(utmpPath, wtmpPath *string, ttyName string) error {
 	// Convert Go strings into C strings that we can pass over ffi.
 	var cUtmpPath *C.char = nil
 	var cWtmpPath *C.char = nil
-	if utmpPath != nil {
-		cUtmpPath = C.CString(*utmpPath)
+	if len(utmpPath) > 0 {
+		cUtmpPath = C.CString(utmpPath)
 		defer C.free(unsafe.Pointer(cUtmpPath))
 	}
-	if wtmpPath != nil {
-		cWtmpPath = C.CString(*wtmpPath)
+	if len(wtmpPath) > 0 {
+		cWtmpPath = C.CString(wtmpPath)
 		defer C.free(unsafe.Pointer(cWtmpPath))
 	}
 	cTtyName := C.CString(strings.TrimPrefix(ttyName, "/dev/"))
@@ -161,15 +161,15 @@ func Close(utmpPath, wtmpPath *string, ttyName string) error {
 }
 
 // UserWithPtyInDatabase checks the user accounting database for the existence of an USER_PROCESS entry with the given username.
-func UserWithPtyInDatabase(utmpPath *string, username string) error {
+func UserWithPtyInDatabase(utmpPath string, username string) error {
 	if len(username) > nameMaxLen {
 		return trace.BadParameter("username length exceeds OS limits")
 	}
 
 	// Convert Go strings into C strings that we can pass over ffi.
 	var cUtmpPath *C.char = nil
-	if utmpPath != nil {
-		cUtmpPath = C.CString(*utmpPath)
+	if len(utmpPath) > 0 {
+		cUtmpPath = C.CString(utmpPath)
 		defer C.free(unsafe.Pointer(cUtmpPath))
 	}
 	cUsername := C.CString(username)

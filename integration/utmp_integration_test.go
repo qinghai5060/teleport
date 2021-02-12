@@ -93,7 +93,7 @@ func TestRootUTMPEntryExists(t *testing.T) {
 	err = se.Shell()
 	require.NoError(t, err)
 	time.Sleep(5 * time.Second)
-	entryExists := uacc.UserWithPtyInDatabase(&s.utmpPath, teleportTestUser)
+	entryExists := uacc.UserWithPtyInDatabase(s.utmpPath, teleportTestUser)
 	require.NoError(t, entryExists)
 }
 
@@ -213,7 +213,7 @@ func newSrvCtx(t *testing.T) *SrvCtx {
 		),
 		regular.SetBPF(&bpf.NOP{}),
 		regular.SetClock(s.clock),
-		regular.SetUtmpPath(&utmpPath, &wtmpPath),
+		regular.SetUtmpPath(utmpPath, utmpPath),
 	)
 	require.NoError(t, err)
 	s.srv = srv

@@ -413,8 +413,8 @@ func (s *Server) GetClock() clockwork.Clock {
 }
 
 // GetUtmpPath returns the optional override of the utmp and wtmp path.
-func (s *Server) GetUtmpPath() (*string, *string) {
-	return nil, nil
+func (s *Server) GetUtmpPath() (string, string) {
+	return "", ""
 }
 
 func (s *Server) Serve() {
