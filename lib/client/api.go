@@ -1132,6 +1132,7 @@ func (tc *TeleportClient) SSH(ctx context.Context, command []string, runLocally 
 	if len(nodeAddrs) == 0 {
 		return trace.BadParameter("no target host specified")
 	}
+
 	nodeClient, err := proxyClient.ConnectToNode(
 		ctx,
 		NodeAddr{Addr: nodeAddrs[0], Namespace: tc.Namespace, Cluster: siteInfo.Name},
