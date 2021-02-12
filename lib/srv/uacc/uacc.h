@@ -124,10 +124,10 @@ static int uacc_has_entry_with_user(const char *utmp_path, const char *user) {
     struct utmp *entry = getutent();
     while (entry != NULL) {
         if (entry->ut_type == USER_PROCESS && strcmp(user, entry->ut_user) == 0) {
-	        endutent();
-	        return 0;
+            endutent();
+            return 0;
         }
-	    entry = getutent();
+        entry = getutent();
     }
     endutent();
     return errno == 0 ? UACC_UTMP_ENTRY_DOES_NOT_EXIST : errno;
