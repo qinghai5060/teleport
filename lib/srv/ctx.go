@@ -122,7 +122,7 @@ type Server interface {
 	// Context returns server shutdown context
 	Context() context.Context
 
-	// GetUtmpPath returns the path of the user accounting database and log. If empty is returned the path used is the system default.
+	// GetUtmpPath returns the path of the user accounting database and log. Returns empty for system defaults.
 	GetUtmpPath() (utmp, wtmp string)
 }
 
