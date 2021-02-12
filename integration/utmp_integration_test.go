@@ -94,7 +94,7 @@ func TestRootUTMPEntryExists(t *testing.T) {
 	require.NoError(t, err)
 
 	start := time.Now()
-	for time.Now().Sub(start) < 5*time.Minute {
+	for time.Since(start) < 5*time.Minute {
 		time.Sleep(time.Second)
 		entryExists := uacc.UserWithPtyInDatabase(s.utmpPath, teleportTestUser)
 		if entryExists == nil {
