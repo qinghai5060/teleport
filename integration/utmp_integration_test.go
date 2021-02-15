@@ -62,6 +62,10 @@ type SrvCtx struct {
 
 // TestRootUTMPEntryExists verifies that user accounting is done on supported systems.
 func TestRootUTMPEntryExists(t *testing.T) {
+	if !isRoot() {
+		t.Skip("This test will be skipped because tests are not being run as root.")
+	}
+
 	s := newSrvCtx(t)
 	up, err := newUpack(s, teleportTestUser, []string{teleportTestUser}, wildcardAllow)
 	require.NoError(t, err)
